@@ -1,0 +1,40 @@
+<?php
+
+namespace DummyNamespace;
+
+use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\SluggableInterface;
+use Cviebrock\EloquentSluggable\SluggableTrait;
+
+class DummyClass extends Model implements SluggableInterface
+{
+
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = '{{table}}';
+
+    /**
+     * Attributes that should be mass-assignable.
+     *
+     * @var array
+     */
+    protected $fillable = {{fillable}};
+
+    
+    use SluggableTrait;
+
+    protected $sluggable = [
+        'build_from'        => '{{slug}}',
+        'save_to'           => 'slug',
+        'max_length'        => 100,
+        'method'            => null,
+        'separator'         => '-',
+        'unique'            => true,
+        'include_trashed'   => false,
+        'on_update'         => true,
+        'reserved'          => null,
+    ];
+}

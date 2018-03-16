@@ -1,0 +1,115 @@
+@extends('admin.adminmaster')
+@section('title', '%%crudNamePluralCap%%')
+
+@section('content')
+ <!-- PAGE CONTENT --> 
+    <!-- START BREADCRUMB -->
+    <ul class="breadcrumb">
+        <li><a href="{{ URL('/panelarea')}}">Dashboard</a></li>                   
+        <li class="active">%%crudNamePluralCap%%</li>
+    </ul>
+    <!-- END BREADCRUMB -->                
+    
+    <div class="page-title">                    
+        <h2><span class="fa fa-pencil-square-o"></span> %%crudNamePluralCap%%</h2>
+    </div>                   
+    
+    <!-- PAGE CONTENT WRAPPER -->
+    <div class="page-content-wrap">
+
+        <!-- PAGE CONTENT INNER || EDITEBEL AREA --> 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">All %%crudNamePluralCap%%</h3>
+                        <a class="btn btn-info btn-rounded pull-right" href="{{ url('/panelarea/%%crudName%%/create') }}"><span class="fa fa-plus"></span>Add New %%crudNameCap%%</a>
+                    </div>
+
+                    <div class="panel-body">
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th width="50">#</th>
+                                    %%formHeadingHtml%%
+                                    <th width="80">Status</th>
+                                    <th width="150">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {{-- */$x=0;/* --}}
+                            @foreach($%%crudNamePlural%% as $item)
+                                {{-- */$x++;/* --}}
+                                <tr id="trow_{{$x}}">
+                                    <td class="text-center">{{$x}}</td>
+                                    %%formBodyHtml%%
+                                    <td>
+                                        @if($item->isactive == 1)
+                                            <span class="label label-success">Publish</span>
+                                        @else
+                                            <span class="label label-danger">Draft</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ url('/panelarea/%%crudName%%/status/'.$item->id) }}" class="btn btn-{{$item->isactive == 1 ? 'danger' : 'success'}} btn-rounded btn-sm"  data-toggle="tooltip" data-placement="bottom" title="{{$item->isactive == 1 ? 'Draft Now' : 'Publish Now'}}" ><span class="fa {{$item->isactive == 1 ? 'fa-ban' : 'fa-check'}}"></span></a>
+
+                                        <a href="{{ url('/panelarea/%%crudName%%/'.$item->id.'/edit') }}"><button class="btn btn-default btn-rounded btn-sm"><span class="fa fa-pencil"></span></button></a>
+
+                                        <button class="btn btn-danger btn-rounded btn-sm" onClick="delete_groups({{$item->id}});"><span class="fa fa-times"></span></button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>                                
+
+                </div>
+            </div>                                                
+
+        </div>
+    </div> 
+
+@endsection
+
+@section('footer')
+
+        <!-- MESSAGE BOX-->
+        <div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
+            <div class="mb-container">
+                <div class="mb-middle">
+                    <div class="mb-title"><span class="fa fa-times"></span> Remove <strong>Data</strong> ?</div>
+                    <div class="mb-content">
+                        <p>Are you sure you want to remove this row?</p>                    
+                        <p>Press Yes if you sure.</p>
+                    </div>
+                    <div class="mb-footer">
+                        <div class="pull-right">
+                            {!! Form::open(['method'=>'delete','url'=>'/panelarea/%%crudName%%/', 'id'=> 'groups_delete', 'style' => 'display:inline']) !!}<button type="submit" class="btn btn-success btn-lg mb-control-yes">Yes</button>{!! Form::close() !!}
+                            <button class="btn btn-default btn-lg mb-control-close">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END MESSAGE BOX--> 
+@endsection
+
+@section('foot')
+<script type="text/javascript">
+    function delete_groups(id){
+        var form = $("#groups_delete");
+        var get_new_url= form.attr("action") +"/"+ id;
+        form.attr("action", get_new_url);
+        var box = $("#mb-remove-row");
+        box.addClass("open");
+        
+        box.find(".mb-control-yes").on("click",function(){
+            box.removeClass("open");
+            $("#trow_"+id).hide("slow",function(){
+                $(this).remove();
+            });
+        });
+    };
+</script>
+@endsection
